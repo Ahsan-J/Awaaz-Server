@@ -1,24 +1,19 @@
-let express       = require('express');
-let socket        = require('socket.io');
-var createError   = require('http-errors');
-var path          = require('path');
-var cookieParser  = require('cookie-parser');
-var logger        = require('morgan');
-let bodyParser    = require('body-parser');
-let debug         = require('debug')('awaaz-express:server');
+let express           = require('express');
+let socket            = require('socket.io');
+var createError       = require('http-errors');
+var path              = require('path');
+var cookieParser      = require('cookie-parser');
+var logger            = require('morgan');
+let bodyParser        = require('body-parser');
+let debug             = require('debug')('awaaz-express:server');
+let customMiddlewares = require('./config/middlewareFunctons.js')
 
 // Init the Server
 let app           = express();
 let port          = 9000;
 
-let allowCrossDomain = function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', '*');
-  next();
-}
-
-app.use(allowCrossDomain);
+app.use(customMiddlewares.allowCrossDomain);
+app.use(customMiddlewares.responseObjectMiddleware);
 app.use(logger('dev'));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
