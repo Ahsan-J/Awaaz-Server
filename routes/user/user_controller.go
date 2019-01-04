@@ -3,12 +3,11 @@ package user
 import (
 	"net/http"
 	"fmt"
-	"encoding/json"
+	// "encoding/json"
 	"../../helpers"
 )
 
 func getAll (w http.ResponseWriter, r *http.Request){
-	fmt.Println(r);
 	var err error
 	users := []User{};
 	db := helpers.GetDBInstance();
@@ -25,11 +24,5 @@ func getAll (w http.ResponseWriter, r *http.Request){
 	}
 
 	// Sending Response
-	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(users)
-	if err != nil {
-		fmt.Println(err);
-		return
-	}
+	usersAllSuccess.SendAPI(w,users);
 }
