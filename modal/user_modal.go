@@ -1,4 +1,4 @@
-package user
+package modal
 
 // User table modal definition to be matched up with the Database"
 type User struct {
@@ -10,14 +10,14 @@ type User struct {
 	DateOfBirth    interface{} `db:"date_of_birth" json:"date_of_birth"`
 	Email          interface{} `db:"email" json:"email"`
 	Contact        interface{} `db:"contact" json:"contact"`
-	DeviceID       string      `db:"device_id" json:"devce_id"`
-	MacAddress     string      `db:"mac_address" json:"mac_address"`
-	CreatedAt      string      `db:"created_at" json:"created_at"`
-	UpdateddAt     string      `db:"updated_at" json:"updated_at"`
-	DeletedAt      interface{} `db:"deleted_at" json:"deleted_at"`
+	Status         int         `db:"status" json:"user_status"`
+	CreatedAt      string      `db:"created_at" json:"-"`
+	UpdatedAt      interface{} `db:"updated_at" json:"-"`
+	DeletedAt      interface{} `db:"deleted_at" json:"-"`
 }
 
-func (user *User) optimize () {
+// Optimize optimizes the Interface data types to their defined data types
+func (user *User) Optimize() {
 	if user.Password != nil {
 		user.Password = string(user.Password.([]uint8))
 	}
@@ -35,5 +35,8 @@ func (user *User) optimize () {
 	}
 	if user.DeletedAt != nil {
 		user.DeletedAt = string(user.DeletedAt.([]uint8))
+	}
+	if user.UpdatedAt != nil {
+		user.UpdatedAt = string(user.UpdatedAt.([]uint8))
 	}
 }
