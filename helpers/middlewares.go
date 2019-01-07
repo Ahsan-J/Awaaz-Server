@@ -45,16 +45,46 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// accessTokenExpired.SendAPI(w,token);
 		next.ServeHTTP(w, r)
 	})
 }
 
-// SetHeaders injects the necessary header contents for an API call
-func SetHeaders(next http.Handler) http.Handler {
+var refreshTokenInvalid = modal.Response{Status: http.StatusForbidden, Message: "Refresh Token is Invalid", Code: "ERRRT001"}
+var refreshTokenRequired = modal.Response{Status : http.StatusBadRequest, Message : "Refresh Token is required", Code: "ERRRT002"}
+var refreshTokenExpired = modal.Response{Status: http.StatusForbidden, Message:"Refresh Token is Expired"}
+
+// ValidateRefreshToken refreshes the token after verifying it
+func ValidateRefreshToken(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(http.StatusForbidden)
+		token := []modal.Token{}
+
+		if _, ok := r.Header["Authorization"]; !ok {
+			refreshTokenRequired.SendAPI(w, nil)
+			return
+		}
+
+		s := strings.Split(r.Header["Authorization"][0], " ")
+		db := GetDBInstance()
+		defer db.Close()
+		err := db.Select(&token, "SELECT * FROM tokens WHERE refresh_token='"+s[1]+"'")
+		if err != nil {
+			fmt.Println("db error", err)
+		}
+
+		if len(token) <= 0 {
+			refreshTokenInvalid.SendAPI(w, nil)
+			return
+		}
+
+		RTime := ParseTimestamp(token[0].RefreshTokenTime)
+		refreshDuration, _ := time.ParseDuration(strconv.Itoa(token[0].RefreshTokenExpiry) + "s")
+
+		if RTime.Add(refreshDuration).Unix() < time.Now().Unix() {
+			refreshTokenExpired.SendAPI(w, nil)
+			return
+		}
+
+
 		next.ServeHTTP(w, r)
 	})
 }
