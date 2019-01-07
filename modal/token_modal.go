@@ -2,7 +2,7 @@ package modal
 
 // Token table modal definition to be matched up with the Database"
 type Token struct {
-	ID                 int    `db:"id" json:"-"`
+	ID                 string `db:"id" json:"-"`
 	AccessToken        string `db:"access_token" json:"access_token"`
 	AccessTokenTime    string `db:"access_token_time" json:"access_token_time"`
 	AccessTokenExpiry  int    `db:"access_token_expiry" json:"access_token_expiry"`
