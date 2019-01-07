@@ -3,13 +3,13 @@ package generalapi
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
-	"strconv"
-	"github.com/teris-io/shortid"
 
 	"../../helpers"
 	"../../modal"
+	"github.com/teris-io/shortid"
 )
 
 type combinedResponse struct {
@@ -143,7 +143,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 		}
 
 		password = helpers.GetSecuredHash(password)
-	} 
+	}
 	// Validating Email
 	if len(email) > 0 && helpers.IsApproved(status) == true && helpers.ValidateEmail(email) == false {
 		emailInvalid.SendAPI(w, nil)
@@ -177,29 +177,58 @@ func register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newID,err := shortid.Generate()
+	newID, err := shortid.Generate()
 	if err != nil {
-		fmt.Println("Error generating ID",err)
+		fmt.Println("Error generating ID", err)
 	}
 
 	now := time.Now().Unix()
-	var user = modal.User {
-		ID: newID,
-		Name: name,
-		Password: password,
+	var user = modal.User{
+		ID:             newID,
+		Name:           name,
+		Password:       password,
 		SocialPlatform: socialPlatform,
-		Gender: gender,
-		DateOfBirth: dateOfBirth,
-		Email: email,
-		Contact: contact,
-		Status : status,
-		CreatedAt : strconv.Itoa(int(now)),
-		UpdatedAt : nil,
-		DeletedAt : nil,
+		Gender:         gender,
+		DateOfBirth:    dateOfBirth,
+		Email:          email,
+		Contact:        contact,
+		Status:         status,
+		CreatedAt:      strconv.Itoa(int(now)),
+		UpdatedAt:      nil,
+		DeletedAt:      nil,
 	}
 
 	token := helpers.CreateNewToken(user, apiKeyData[0], deviceID, macAddress)
 	res := combinedResponse{token, user}
 
 	registerSuccess.SendAPI(w, res)
+}
+
+func refresh(w http.ResponseWriter, r *http.Request) {
+	var id = strings.TrimSpace(r.FormValue("id"))
+
+	db := helpers.GetDBInstance()
+	defer db.Close()
+
+	if len(id) <= 0 {
+		fieldMissing.SendAPI(w,nil)
+		return
+	}		
+	
+	var user = []modal.User{}
+	
+	err := db.Select(&user, "SELECT * FROM user WHERE id='"+id+"'")
+	
+	
+	if err != nil {
+		fmt.Println("Error fetching DB", err)
+		internalServerError.SendAPI(w, nil)
+		return
+	}
+	user[0].Optimize()
+	s := strings.Split(r.Header["Authorization"][0], " ")
+	token := helpers.GetRefreshedToken(s[1],user[0]);
+	// token := helpers.CreateNewToken(user[0], apiKeyData[0], deviceID, macAddress)
+	res := combinedResponse{token, user[0]}
+	refreshSuccess.SendAPI(w,res)
 }

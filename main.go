@@ -27,8 +27,6 @@ func main() {
 	go socketServer.Serve()
 	defer socketServer.Close()
 	r.Handle("/socket.io/", socketServer) // Handling Sockets connection url
-	// Adding Middlewares
-	// r.Use(helpers.SetHeaders);
 
 	log.Println("Serving at port = " + strconv.Itoa(port) + "...")
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), r))
