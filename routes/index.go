@@ -4,20 +4,14 @@ import (
 	"html/template"
 	"net/http"
 
-	"./admin"
-	"./attachment"
-	"./generalapi"
-	"./user"
 	"github.com/gorilla/mux"
 )
 
 // GenerateRoutes combines all of the functions and generate them to be used
 func GenerateRoutes(router *mux.Router) {
-	admin.GenerateAdminRoutes(router)
 	// Api
-	generalapi.GenerateGeneralAPIRoutes(router)
-	user.GenerateUserAPIRoutes(router)
-	attachment.GenerateAttachmentApiRoutes(router)
+	generateGeneralAPIRoutes(router)
+	generateUserAPIRoutes(router)
 
 	serveStatic(router)
 	router.HandleFunc("/", index)

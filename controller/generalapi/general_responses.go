@@ -2,9 +2,13 @@ package generalapi
 
 import (
 	"net/http"
-
 	"../../modal"
 )
+
+type combinedResponse struct {
+	modal.Token
+	modal.User
+}
 
 // Login Success
 var loginSuccess = modal.Response{Status: http.StatusOK, Message: "Login Success", Code: "SUCCLOG001"}

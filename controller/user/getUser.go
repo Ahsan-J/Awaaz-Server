@@ -8,31 +8,8 @@ import (
 	"../../modal"
 )
 
-func getAll(w http.ResponseWriter, r *http.Request) {
-	var err error
-	users := []modal.User{}
-	db := helpers.GetDBInstance()
-	defer db.Close()
-	// Fetching Data
-	err = db.Select(&users, "SELECT * FROM user")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	if len(users) <= 0 {
-		userNotFound.SendAPI(w, nil)
-	}
-
-	for i := range users {
-		users[i].Optimize()
-	}
-
-	// Sending Response
-	usersAllSuccess.SendAPI(w, users)
-}
-
-func getUser(w http.ResponseWriter, r *http.Request) {
+// GetUser path:/user
+func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query() // Get GET Query Paramaters
 
 	if _, ok := params["id"]; !ok {
