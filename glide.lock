@@ -1,0 +1,32 @@
+hash: b254a538390f026ec5182e7ac6c762daf37aa00e35a318181a7fe1c6fd90742e
+updated: 2019-01-08T22:06:07.516586576+05:00
+imports:
+- name: github.com/go-sql-driver/mysql
+  version: 72cd26f257d44c1114970e19afddcd812016007e
+- name: github.com/googollee/go-engine.io
+  version: e2f255711dcb2ea41e42c6d9d98c172d7edf6509
+  subpackages:
+  - message
+  - parser
+  - polling
+  - transport
+  - websocket
+- name: github.com/googollee/go-socket.io
+  version: 0ad7206c347a1c531174c35fb3b68be22360a80c
+- name: github.com/gorilla/context
+  version: 51ce91d2eaddeca0ef29a71d766bb3634dadf729
+- name: github.com/gorilla/mux
+  version: e3702bed27f0d39777b0b37b664b6280e8ef8fbf
+- name: github.com/gorilla/websocket
+  version: 95ba29eb981bbb27d92e1f70bf8a1949452d926b
+- name: github.com/jmoiron/sqlx
+  version: d161d7a76b5661016ad0b085869f77fd410f3e6a
+  subpackages:
+  - reflectx
+- name: github.com/teris-io/shortid
+  version: 6c56cef5189ca1b3d5ef01dc07f4d611dfc0bb33
+- name: google.golang.org/appengine
+  version: e9657d882bb81064595ca3b56cbe2546bbabf7b1
+  subpackages:
+  - cloudsql
+testImports: []
