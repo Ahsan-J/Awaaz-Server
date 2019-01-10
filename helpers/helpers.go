@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"../modal"
+	"awaaz_go_server/modal"
 	"github.com/teris-io/shortid"
 )
 

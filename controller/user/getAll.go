@@ -1,11 +1,10 @@
 package user
 
 import (
+	"awaaz_go_server/helpers"
+	"awaaz_go_server/modal"
 	"fmt" // "encoding/json"
 	"net/http"
-
-	"../../helpers"
-	"../../modal"
 )
 
 // GetAll path:/users

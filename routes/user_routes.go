@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"../helpers"
-	"../controller/user"
+	"awaaz_go_server/helpers"
+	"awaaz_go_server/controller/user"
 	"github.com/gorilla/mux"
 )
 

@@ -2,7 +2,7 @@ package generalapi
 
 import (
 	"net/http"
-	"../../modal"
+	"awaaz_go_server/modal"
 )
 
 type combinedResponse struct {

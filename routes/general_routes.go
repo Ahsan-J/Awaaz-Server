@@ -3,8 +3,8 @@ package routes
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"../helpers"
-	"../controller/generalapi"
+	"awaaz_go_server/helpers"
+	"awaaz_go_server/controller/generalapi"
 )
 
 // GenerateGeneralAPIRoutes generates the required user API to serve

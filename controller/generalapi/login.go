@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"../../helpers"
-	"../../modal"
+	"awaaz_go_server/helpers"
+	"awaaz_go_server/modal"
 )
 
 // Login path:/login

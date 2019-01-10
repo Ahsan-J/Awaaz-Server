@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"../../helpers"
-	"../../modal"
+	"awaaz_go_server/helpers"
+	"awaaz_go_server/modal"
 	"github.com/teris-io/shortid"
 )
 

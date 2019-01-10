@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"../modal"
+	"awaaz_go_server/modal"
 )
 
 var accessTokenExpired = modal.Response{Status: http.StatusForbidden, Message: "Access Token is expired", Code: "ERRAT001"}

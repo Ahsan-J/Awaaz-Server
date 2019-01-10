@@ -1,14 +1,14 @@
 package main
 
 import (
+	"awaaz_go_server/routes"
+	"awaaz_go_server/sockets"
 	"log"
 	"net/http"
 	"strconv"
 
-	"./routes"
-	"./sockets"
-	"github.com/googollee/go-socket.io"
 	"github.com/gorilla/mux"
+	"gopkg.in/googollee/go-socket.io.v1"
 	// "./helpers"
 )
 

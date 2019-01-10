@@ -1,9 +1,8 @@
 package user
 
 import (
+	"awaaz_go_server/modal"
 	"net/http"
-
-	"../../modal"
 )
 
 // Success
