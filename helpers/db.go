@@ -5,14 +5,10 @@ import (
 	"log"
 	"github.com/jmoiron/sqlx"
 )
-var host = "db4free.net"
-var user = "awaaz_admin"
-var password = "qwerty12345"
-var port = "3306"
-var database = "awaaz_case_store"
+
 // GetDBInstance return the connection Instance of DB
 func GetDBInstance () *sqlx.DB {
-	db, err := sqlx.Open("mysql", user+ ":" + password +"@tcp("+host+":"+port+")/"+database)
+	db, err := sqlx.Open("mysql", dbConfig)
 	if err != nil {
 		log.Fatalln(err)
 	}
