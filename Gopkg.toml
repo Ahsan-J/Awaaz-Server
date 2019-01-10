@@ -24,6 +24,10 @@
 #   go-tests = true
 #   unused-packages = true
 
+[metadata.heroku]
+  root-package = "awaaz_go_server"
+  go-version = "go1.11.1"
+  install = [ "./..." ]
 
 [[constraint]]
   name = "github.com/go-sql-driver/mysql"
