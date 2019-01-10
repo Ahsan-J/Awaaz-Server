@@ -5,17 +5,24 @@ import (
 	"awaaz_go_server/sockets"
 	"log"
 	"net/http"
-	"strconv"
+	"os"
 
 	"github.com/gorilla/mux"
 	"gopkg.in/googollee/go-socket.io.v1"
 	// "./helpers"
 )
 
-var port = 7000
+func determineListenAddress() (string) {
+  port := os.Getenv("PORT")
+  if port == "" {
+    return ":7000"
+  }
+  return ":" + port
+}
 
 func main() {
-
+	addr := determineListenAddress()
+	
 	r := mux.NewRouter()
 	routes.GenerateRoutes(r)
 
@@ -28,6 +35,6 @@ func main() {
 	defer socketServer.Close()
 	r.Handle("/socket.io/", socketServer) // Handling Sockets connection url
 
-	log.Println("Serving at port = " + strconv.Itoa(port) + "...")
-	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(port), r))
+	log.Println("Serving at port = "+ addr + "...")
+	log.Fatal(http.ListenAndServe(addr, r))
 }
