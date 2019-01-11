@@ -51,7 +51,7 @@ func AddAttachment(w http.ResponseWriter, r *http.Request) {
 		ID: newID,
 		CaseID : CaseID,
 		FileName: fileProcessedName,
-		HostedURL: "http://"+r.Host+"/uploads/"+fileProcessedName,
+		HostedURL: "https://"+r.Host+"/uploads/"+fileProcessedName,
 		MemeType: header.Header["Content-Type"][0],
 		UploadedAt: strconv.Itoa(int(now)),
 	}
