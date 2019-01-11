@@ -12,6 +12,8 @@ func GenerateRoutes(router *mux.Router) {
 	// Api
 	generateGeneralAPIRoutes(router)
 	generateUserAPIRoutes(router)
+	generateReportAPIRoutes(router)
+	generateAttachmentAPIRoutes(router)
 
 	serveStatic(router)
 	router.HandleFunc("/", index)

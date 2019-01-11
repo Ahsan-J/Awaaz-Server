@@ -14,5 +14,6 @@ func generateUserAPIRoutes(router *mux.Router) {
 
 	sub := router.PathPrefix("/user").Subrouter()
 	sub.Use(helpers.LoggingMiddleware)
+	
 	sub.HandleFunc("", user.GetUser).Methods("GET")
 }
