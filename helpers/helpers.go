@@ -110,7 +110,7 @@ func CreateNewToken(user modal.User, key modal.APIKey, deviceID string, macAddre
 		MacAddress:         macAddress,
 	}
 
-	SaveByID(&token, false)
+	token.Save(db);
 	return token
 }
 
@@ -169,42 +169,6 @@ func GetRefreshedToken(refreshToken string, user modal.User) modal.Token {
 		MacAddress:         s[7],
 	}
 
-	SaveByID(&token, true)
+	token.Update(db);
 	return token
-}
-
-// SaveByID saves token by its ID
-func SaveByID(token *modal.Token, update bool) {
-
-	db := GetDBInstance()
-	defer db.Close()
-
-	if strings.TrimSpace(token.ID) == "" {
-		fmt.Println("Empty ID")
-		return
-	}
-
-	sql := "INSERT INTO tokens(id,access_token, access_token_time, access_token_expiry, user_id, status, api_key, refresh_token, refresh_token_time, refresh_token_expiry, device_id, mac_address) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
-
-	if update == true {
-		sql = "UPDATE tokens SET id=?,access_token=?,access_token_time=?,access_token_expiry=?,user_id=?,status=?,api_key=?,refresh_token=?,refresh_token_time=?,refresh_token_expiry=?,device_id=?,mac_address=? WHERE id='" + token.ID + "'"
-	}
-
-	_, err := db.Exec(sql,
-		token.ID,
-		token.AccessToken,
-		token.AccessTokenTime,
-		token.AccessTokenExpiry,
-		token.UserID,
-		token.Status,
-		token.APIKey,
-		token.RefreshToken,
-		token.RefreshTokenTime,
-		token.RefreshTokenExpiry,
-		token.DeviceID,
-		token.MacAddress,
-	)
-	if err != nil {
-		fmt.Println(err)
-	}
 }
