@@ -1,5 +1,12 @@
 package modal
 
+import (
+	"github.com/teris-io/shortid"
+	"github.com/jmoiron/sqlx"
+	"strings"
+	"fmt"
+)
+
 // User table modal definition to be matched up with the Database"
 type User struct {
 	ID             string      `db:"id" json:"id"`
@@ -38,5 +45,84 @@ func (user *User) Optimize() {
 	}
 	if user.UpdatedAt != nil {
 		user.UpdatedAt = string(user.UpdatedAt.([]uint8))
+	}
+}
+
+
+// Save entry to database
+func (user *User) Save(db *sqlx.DB) {
+
+	if strings.TrimSpace(user.Name) == "" || user.Status == 0 {
+		fmt.Println("Missing Fields from users")
+		return
+	}
+
+	// Validating Gender
+	if strings.ToLower(user.Gender) != "male" && strings.ToLower(user.Gender) != "female" && strings.ToLower(user.Gender) != "other" {
+		fmt.Println("Gender unspecified")
+		return
+	}
+	
+	if  strings.TrimSpace(user.ID) == "" {
+		user.ID, _ = shortid.Generate()
+	}
+	
+	sql := "INSERT INTO user(id,name, password, social_platform, gender,date_of_birth, email, contact, status, created_at, updated_at, deleted_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
+
+	_, err := db.Exec(sql,
+		user.ID,
+		user.Name,
+		user.Password,
+		user.SocialPlatform,
+		user.Gender,
+		user.DateOfBirth,
+		user.Email,
+		user.Contact,
+		user.Status,
+		user.CreatedAt,
+		user.UpdatedAt,
+		user.DeletedAt,
+	)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+// Update the database entry
+func (user *User) Update(db *sqlx.DB) {
+	
+	if strings.TrimSpace(user.Name) == "" || user.Status == 0 {
+		fmt.Println("Missing Fields from users")
+		return
+	}
+
+	// Validating Gender
+	if strings.ToLower(user.Gender) != "male" && strings.ToLower(user.Gender) != "female" && strings.ToLower(user.Gender) != "other" {
+		fmt.Println("Gender unspecified")
+		return
+	}
+	
+	if strings.TrimSpace(user.ID) == "" {
+		fmt.Println("Empty ID")
+		return
+	}
+
+	sql := "UPDATE user SET name=?,password=?,social_platform=?,gender=?,date_of_birth=?,email=?,contact=?,status=?,created_at=?,updated_at=?,deleted_at=? WHERE id='" + user.ID + "'"
+
+	_, err := db.Exec(sql,
+		user.Name,
+		user.Password,
+		user.SocialPlatform,
+		user.Gender,
+		user.DateOfBirth,
+		user.Email,
+		user.Contact,
+		user.Status,
+		user.CreatedAt,
+		user.UpdatedAt,
+		user.DeletedAt,
+	)
+	if err != nil {
+		fmt.Println(err)
 	}
 }
