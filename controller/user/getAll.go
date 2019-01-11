@@ -5,6 +5,7 @@ import (
 	"awaaz_go_server/modal"
 	"fmt" // "encoding/json"
 	"net/http"
+	"awaaz_go_server/responses"
 )
 
 // GetAll path:/users
@@ -21,7 +22,8 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(users) <= 0 {
-		userNotFound.SendAPI(w, nil)
+		responses.UserNotFound.SendAPI(w, nil)
+		return
 	}
 
 	for i := range users {
@@ -29,5 +31,5 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Sending Response
-	usersAllSuccess.SendAPI(w, users)
+	responses.UsersAllSuccess.SendAPI(w, users)
 }

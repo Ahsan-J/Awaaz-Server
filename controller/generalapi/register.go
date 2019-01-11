@@ -10,6 +10,7 @@ import (
 	"awaaz_go_server/helpers"
 	"awaaz_go_server/modal"
 	"github.com/teris-io/shortid"
+	"awaaz_go_server/responses"
 )
 
 // Register path:/register
@@ -31,7 +32,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	var status = 1
 
 	if len(version) <= 0 || len(platform) <= 0 || len(deviceID) <= 0 || len(macAddress) <= 0 || len(apiKey) <= 0 || len(name) <= 0 || len(gender) <= 0 {
-		fieldMissing.SendAPI(w, nil)
+		responses.FieldMissing.SendAPI(w, nil)
 		return
 	}
 
@@ -44,12 +45,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if len(password) > 0 && helpers.IsApproved(status) == true {
 		// approved password valdation user
 		if helpers.ValidatePassword(password) == false {
-			passwordInvalid.SendAPI(w, nil)
+			responses.PasswordInvalid.SendAPI(w, nil)
 			return
 		}
 
 		if password != confirmPassword {
-			passwordMismatch.SendAPI(w, nil)
+			responses.PasswordMismatch.SendAPI(w, nil)
 			return
 		}
 
@@ -57,12 +58,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 	// Validating Email
 	if len(email) > 0 && helpers.IsApproved(status) == true && helpers.ValidateEmail(email) == false {
-		emailInvalid.SendAPI(w, nil)
+		responses.EmailInvalid.SendAPI(w, nil)
 		return
 	}
 	// Validating Gender
 	if strings.ToLower(gender) != "male" && strings.ToLower(gender) != "female" && strings.ToLower(gender) != "other" {
-		genderUnspecified.SendAPI(w, nil)
+		responses.GenderUnspecified.SendAPI(w, nil)
 		return
 	}
 
@@ -74,17 +75,17 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	err := db.Select(&apiKeyData, "SELECT * FROM api_keys WHERE api_key='"+apiKey+"'")
 	if err != nil {
 		fmt.Println("API Key fetching error", err)
-		internalServerError.SendAPI(w, nil)
+		responses.InternalServerError.SendAPI(w, nil)
 		return
 	}
 
 	if len(apiKeyData) <= 0 || apiKeyData[0].APIKey != apiKey || apiKeyData[0].Platform != platform || helpers.IsApproved(apiKeyData[0].Status) == false {
-		invalidAPIKey.SendAPI(w, nil)
+		responses.InvalidAPIKey.SendAPI(w, nil)
 		return
 	}
 
 	if apiKeyData[0].Version != version {
-		versionUpdate.SendAPI(w, nil)
+		responses.VersionUpdate.SendAPI(w, nil)
 		return
 	}
 
@@ -108,9 +109,10 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:      nil,
 		DeletedAt:      nil,
 	}
+	
+	user.Save(db);
 
 	token := helpers.CreateNewToken(user, apiKeyData[0], deviceID, macAddress)
 	res := combinedResponse{token, user}
-
-	registerSuccess.SendAPI(w, res)
+	responses.RegisterSuccess.SendAPI(w, res)
 }

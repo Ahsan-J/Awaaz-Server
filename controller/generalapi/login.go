@@ -7,7 +7,13 @@ import (
 
 	"awaaz_go_server/helpers"
 	"awaaz_go_server/modal"
+	"awaaz_go_server/responses"
 )
+
+type combinedResponse struct {
+	modal.Token
+	modal.User
+}
 
 // Login path:/login
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -21,7 +27,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var version = strings.TrimSpace(r.FormValue("version"))
 
 	if len(version) <= 0 || len(platform) <= 0 || len(deviceID) <= 0 || len(deviceID) <= 0 || len(macAddress) <= 0 || len(apiKey) <= 0 {
-		fieldMissing.SendAPI(w, nil)
+		responses.FieldMissing.SendAPI(w, nil)
 		return
 	}
 
@@ -30,12 +36,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(email) <= 0 {
-		emailRequired.SendAPI(w, nil)
+		responses.EmailRequired.SendAPI(w, nil)
 		return
 	}
 
 	if helpers.ValidateEmail(email) == false {
-		emailInvalid.SendAPI(w, nil)
+		responses.EmailInvalid.SendAPI(w, nil)
 		return
 	}
 
@@ -46,17 +52,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err := db.Select(&apiKeyData, "SELECT * FROM api_keys WHERE api_key='"+apiKey+"'")
 	if err != nil {
 		fmt.Println("API Key fetching error", err)
-		internalServerError.SendAPI(w, nil)
+		responses.InternalServerError.SendAPI(w, nil)
 		return
 	}
 
 	if len(apiKeyData) <= 0 || apiKeyData[0].APIKey != apiKey || apiKeyData[0].Platform != platform || helpers.IsApproved(apiKeyData[0].Status) == false {
-		invalidAPIKey.SendAPI(w, nil)
+		responses.InvalidAPIKey.SendAPI(w, nil)
 		return
 	}
 
 	if apiKeyData[0].Version != version {
-		versionUpdate.SendAPI(w, nil)
+		responses.VersionUpdate.SendAPI(w, nil)
 		return
 	}
 
@@ -65,12 +71,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	err = db.Select(&user, "SELECT * FROM user WHERE email='"+email+"'")
 	if err != nil {
 		fmt.Println(err)
-		internalServerError.SendAPI(w, nil)
+		responses.InternalServerError.SendAPI(w, nil)
 		return
 	}
 
 	if len(user) <= 0 {
-		loginUserNotFound.SendAPI(w, nil)
+		responses.LoginUserNotFound.SendAPI(w, nil)
 		return
 	}
 
@@ -79,12 +85,12 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if user[0].Password != nil || helpers.IsApproved(user[0].Status) == true {
 		// approved password valdation user
 		if len(password) <= 0 {
-			passwordRequired.SendAPI(w, nil)
+			responses.PasswordRequired.SendAPI(w, nil)
 			return
 		}
 
 		if helpers.GetSecuredHash(password) != user[0].Password {
-			passwordMismatch.SendAPI(w, nil)
+			responses.PasswordMismatch.SendAPI(w, nil)
 			return
 		}
 	}
@@ -92,5 +98,5 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	token := helpers.CreateNewToken(user[0], apiKeyData[0], deviceID, macAddress)
 	res := combinedResponse{token, user[0]}
 
-	loginSuccess.SendAPI(w, res)
+	responses.LoginSuccess.SendAPI(w, res)
 }

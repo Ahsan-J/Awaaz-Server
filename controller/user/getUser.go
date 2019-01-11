@@ -5,6 +5,7 @@ import (
 	"awaaz_go_server/modal"
 	"fmt" // "encoding/json"
 	"net/http"
+	"awaaz_go_server/responses"
 )
 
 // GetUser path:/user
@@ -12,7 +13,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query() // Get GET Query Paramaters
 
 	if _, ok := params["id"]; !ok {
-		userNotEnoughParams.SendAPI(w, nil)
+		responses.UserNotEnoughParams.SendAPI(w, nil)
 		return
 	}
 	fmt.Println("Fetching for user:", params["id"][0], "From data", params)
@@ -28,8 +29,8 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	if len(user) > 0 {
 		user[0].Optimize()
-		userSuccess.SendAPI(w, user[0])
+		responses.UserSuccess.SendAPI(w, user[0])
 		return
 	}
-	userNotFound.SendAPI(w, nil)
+	responses.UserNotFound.SendAPI(w, nil)
 }

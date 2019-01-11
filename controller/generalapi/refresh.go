@@ -7,6 +7,7 @@ import (
 
 	"awaaz_go_server/helpers"
 	"awaaz_go_server/modal"
+	"awaaz_go_server/responses"
 )
 
 // Refresh path:/refresh
@@ -17,7 +18,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	if len(id) <= 0 {
-		fieldMissing.SendAPI(w,nil)
+		responses.FieldMissing.SendAPI(w,nil)
 		return
 	}		
 	
@@ -28,7 +29,7 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 	
 	if err != nil {
 		fmt.Println("Error fetching DB", err)
-		internalServerError.SendAPI(w, nil)
+		responses.InternalServerError.SendAPI(w, nil)
 		return
 	}
 	user[0].Optimize()
@@ -36,5 +37,5 @@ func Refresh(w http.ResponseWriter, r *http.Request) {
 	token := helpers.GetRefreshedToken(s[1],user[0]);
 	// token := helpers.CreateNewToken(user[0], apiKeyData[0], deviceID, macAddress)
 	res := combinedResponse{token, user[0]}
-	refreshSuccess.SendAPI(w,res)
+	responses.RefreshSuccess.SendAPI(w,res)
 }
