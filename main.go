@@ -3,6 +3,8 @@ package main
 import (
 	"awaaz_go_server/routes"
 	"awaaz_go_server/sockets"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -12,17 +14,17 @@ import (
 	// "./helpers"
 )
 
-func determineListenAddress() (string) {
-  port := os.Getenv("PORT")
-  if port == "" {
-    return ":7000"
-  }
-  return ":" + port
+func determineListenAddress() string {
+	port := os.Getenv("PORT")
+	if port == "" {
+		return ":7000"
+	}
+	return ":" + port
 }
 
 func main() {
 	addr := determineListenAddress()
-	
+
 	r := mux.NewRouter()
 	routes.GenerateRoutes(r)
 
@@ -34,7 +36,14 @@ func main() {
 	go socketServer.Serve()
 	defer socketServer.Close()
 	r.Handle("/socket.io/", socketServer) // Handling Sockets connection url
+	files, err := ioutil.ReadDir("./")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	log.Println("Serving at port = "+ addr + "...")
+	for _, f := range files {
+		fmt.Println(f.Name())
+	}
+	log.Println("Serving at port = " + addr + "...")
 	log.Fatal(http.ListenAndServe(addr, r))
 }
