@@ -28,5 +28,5 @@ var emailPattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]
 // Minimum six characters:
 var passwordPattern = "([a-zA-Z0-9]+){6,}"
 
-// var dbConfig = "root:@tcp(localhost:3306)/awaaz_case_store" // development
-var dbConfig = "awaaz_admin:qwerty12345@tcp(db4free.net:3306)/awaaz_case_store" // production
+var dbConfig = "xcalaiberz:illusionist@tcp(localhost:3306)/awaaz_case_store" // development
+// var dbConfig = "awaaz_admin:qwerty12345@tcp(db4free.net:3306)/awaaz_case_store" // production

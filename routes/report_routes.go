@@ -13,4 +13,6 @@ func generateReportAPIRoutes(router *mux.Router) {
 	// reports.Use(helpers.LoggingMiddleware)
 	reports.HandleFunc("", report.GetAll).Methods("GET") // GET Request to handle all data present in the Database
 
+	// user routes
+	reports.HandleFunc("/submit",report.Submit).Methods("POST")
 }
